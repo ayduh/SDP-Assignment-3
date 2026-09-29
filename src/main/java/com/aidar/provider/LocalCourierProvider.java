@@ -1,29 +1,33 @@
-package courier.provider;
+package com.aidar.provider;
 
-import courier.model.CourierException;
-import courier.model.CourierException.Reason;
+import com.aidar.model.CourierException;
+import com.aidar.model.CourierException.Reason;
+import com.aidar.model.ServiceLevel;
+import com.aidar.model.Shipment;
+import com.aidar.model.ShipmentRequest;
 
-import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * complexity Module: dynamic implementor selection.
- * Picks the courier at runtime from the input (destination country).
- * It only talks to CourierProvider, so the adapted courier is chosen exactly like the native ones.
- * Adding a new courier = write a class + add it to the list. This class never changes.
- */
-public class ProviderSelector {
+/** BRIDGE - Concrete Implementor #2 (native): domestic (KZ) only, up to 20 kg. */
+public class LocalCourierProvider implements CourierProvider {
 
-    private final List<CourierProvider> providers;
+    private static final double MAX_KG = 20;
+    private final AtomicInteger counter = new AtomicInteger(5000);
 
-    public ProviderSelector(List<CourierProvider> providers) {
-        this.providers = List.copyOf(providers);
-    }
+    @Override public String name() { return "LocalCourier"; }
 
-    public CourierProvider select(String countryCode) throws CourierException {
-        return providers.stream()
-                .filter(p -> p.supports(countryCode))
-                .findFirst()
-                .orElseThrow(() -> new CourierException(Reason.INVALID_REQUEST,
-                        "No courier delivers to " + countryCode));
+    @Override public boolean supports(String countryCode) { return "KZ".equals(countryCode); }
+
+    @Override
+    public Shipment book(ShipmentRequest r) throws CourierException {
+        double kg = r.parcel().weightKg();
+        if (!supports(r.parcel().destinationCountry()))
+            throw new CourierException(Reason.INVALID_REQUEST, "LocalCourier delivers only inside KZ");
+        if (kg > MAX_KG)
+            throw new CourierException(Reason.INVALID_REQUEST, "LocalCourier max weight is " + MAX_KG + " kg");
+
+        double price = 3 + 0.5 * kg;
+        if (r.level() == ServiceLevel.EXPRESS) price *= 2;
+        return new Shipment(name(), "LOC-" + counter.incrementAndGet(), price, r.pickupDate());
     }
 }

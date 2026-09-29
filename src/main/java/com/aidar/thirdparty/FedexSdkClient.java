@@ -1,4 +1,4 @@
-package courier.thirdparty;
+package com.aidar.thirdparty;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

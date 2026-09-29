@@ -1,4 +1,4 @@
-package courier.model;
+package com.aidar.model;
 
 /**
  * The ONE failure type of the Implementor contract.

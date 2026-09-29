@@ -1,12 +1,12 @@
-package courier.provider;
+package com.aidar.provider;
 
-import courier.model.CourierException;
-import courier.model.CourierException.Reason;
-import courier.model.ServiceLevel;
-import courier.model.Shipment;
-import courier.model.ShipmentRequest;
-import courier.thirdparty.FedexResponse;
-import courier.thirdparty.FedexSdkClient;
+import com.aidar.model.CourierException;
+import com.aidar.model.CourierException.Reason;
+import com.aidar.model.ServiceLevel;
+import com.aidar.model.Shipment;
+import com.aidar.model.ShipmentRequest;
+import com.aidar.thirdparty.FedexResponse;
+import com.aidar.thirdparty.FedexSdkClient;
 
 import java.util.Set;
 

@@ -1,23 +1,23 @@
-package courier;
+package com.aidar;
 
-import courier.abstraction.BulkShipping;
-import courier.abstraction.Delivery;
-import courier.abstraction.ExpressDelivery;
-import courier.abstraction.ScheduledDelivery;
-import courier.model.CourierException;
-import courier.model.Parcel;
-import courier.model.Shipment;
-import courier.provider.CourierProvider;
-import courier.provider.DhlProvider;
-import courier.provider.FedexAdapter;
-import courier.provider.LocalCourierProvider;
-import courier.provider.ProviderSelector;
-import courier.thirdparty.FedexSdkClient;
+import com.aidar.abstraction.BulkShipping;
+import com.aidar.abstraction.Delivery;
+import com.aidar.abstraction.ExpressDelivery;
+import com.aidar.abstraction.ScheduledDelivery;
+import com.aidar.model.CourierException;
+import com.aidar.model.Parcel;
+import com.aidar.model.Shipment;
+import com.aidar.provider.CourierProvider;
+import com.aidar.provider.DhlProvider;
+import com.aidar.provider.FedexAdapter;
+import com.aidar.provider.LocalCourierProvider;
+import com.aidar.provider.ProviderSelector;
+import com.aidar.thirdparty.FedexSdkClient;
 
 import java.time.LocalDate;
 import java.util.List;
 
-// Demo. This is the ONLY place that names concrete couriers (composition root). */
+/** Demo. This is the ONLY place that names concrete couriers (composition root). */
 public class Main {
 
     public static void main(String[] args) {
@@ -28,7 +28,7 @@ public class Main {
 
         LocalDate nextWeek = LocalDate.now().plusDays(7);
 
-        // The courier is chosen from the input (country), never hard-coded here
+        // The courier is chosen from the input (country), never hard-coded here.
         run(selector, "KZ", "Express, 2 kg to Kazakhstan",  new Parcel("KZ", 2),  c -> new ExpressDelivery(c));
         run(selector, "DE", "Bulk, 2 parcels to Germany",   null,                 c -> new BulkShipping(c));
         run(selector, "US", "Scheduled, 5 kg to the USA",   new Parcel("US", 5),  c -> new ScheduledDelivery(c, nextWeek));

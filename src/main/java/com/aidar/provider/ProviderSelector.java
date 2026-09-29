@@ -1,35 +1,29 @@
-package courier.provider;
+package com.aidar.provider;
 
-import courier.model.CourierException;
-import courier.model.CourierException.Reason;
-import courier.model.ServiceLevel;
-import courier.model.Shipment;
-import courier.model.ShipmentRequest;
+import com.aidar.model.CourierException;
+import com.aidar.model.CourierException.Reason;
 
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.List;
 
-// BRIDGE: Concrete Implementor #1 (native): Europe, up to 70 kg
-public class DhlProvider implements CourierProvider {
+/**
+ * COMPLEXITY MODULE: dynamic implementor selection.
+ * Picks the courier at runtime from the input (destination country).
+ * It only talks to CourierProvider, so the adapted courier is chosen exactly like the native ones.
+ * Adding a new courier = write a class + add it to the list. This class never changes.
+ */
+public class ProviderSelector {
 
-    private static final Set<String> COUNTRIES = Set.of("DE", "FR", "IT", "ES", "PL", "NL");
-    private static final double MAX_KG = 70;
-    private final AtomicInteger counter = new AtomicInteger(1000);
+    private final List<CourierProvider> providers;
 
-    @Override public String name() { return "DHL"; }
+    public ProviderSelector(List<CourierProvider> providers) {
+        this.providers = List.copyOf(providers);
+    }
 
-    @Override public boolean supports(String countryCode) { return COUNTRIES.contains(countryCode); }
-
-    @Override
-    public Shipment book(ShipmentRequest r) throws CourierException {
-        double kg = r.parcel().weightKg();
-        if (!supports(r.parcel().destinationCountry()))
-            throw new CourierException(Reason.INVALID_REQUEST, "DHL does not deliver to " + r.parcel().destinationCountry());
-        if (kg > MAX_KG)
-            throw new CourierException(Reason.INVALID_REQUEST, "DHL max weight is " + MAX_KG + " kg");
-
-        double price = 20 + 5 * kg;
-        if (r.level() == ServiceLevel.EXPRESS) price *= 1.5;
-        return new Shipment(name(), "DHL-" + counter.incrementAndGet(), price, r.pickupDate());
+    public CourierProvider select(String countryCode) throws CourierException {
+        return providers.stream()
+                .filter(p -> p.supports(countryCode))
+                .findFirst()
+                .orElseThrow(() -> new CourierException(Reason.INVALID_REQUEST,
+                        "No courier delivers to " + countryCode));
     }
 }

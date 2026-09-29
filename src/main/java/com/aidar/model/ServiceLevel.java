@@ -1,6 +1,4 @@
-package courier.model;
+package com.aidar.model;
 
-import java.time.LocalDate;
-
-// What every courier returns on success (the Implementor's output type)
-public record Shipment(String provider, String trackingNumber, double price, LocalDate pickupDate) { }
+/** Our own, provider-independent speed levels. */
+public enum ServiceLevel { STANDARD, EXPRESS }
