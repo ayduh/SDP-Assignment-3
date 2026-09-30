@@ -12,15 +12,14 @@ mvn compile exec:java # runs the demo (courier.Main)
 
 ## Where is each pattern?
 
-| Role | Class |
-|---|---|
-| Bridge - Abstraction | `abstraction/Delivery` |
-| Bridge - Refined Abstractions | `ExpressDelivery`, `BulkShipping`, `ScheduledDelivery` |
-| Bridge - Implementor | `provider/CourierProvider` |
-| Concrete Implementors | `DhlProvider`, `LocalCourierProvider` (native), `FedexAdapter` (adapted) |
-| Adapter | `provider/FedexAdapter` |
-| Adaptee (third-party, untouched) | `thirdparty/FedexSdkClient`, `FedexResponse` |
-| Complexity module: dynamic implementor selection | `provider/ProviderSelector` |
+Role: Class
+Bridge - Abstraction: abstraction/Delivery
+Bridge - Refined Abstractions: ExpressDelivery`, `BulkShipping`, `ScheduledDelivery`
+Bridge - Implementor: `provider/CourierProvider`
+Concrete Implementors: `DhlProvider`, `LocalCourierProvider` (native), `FedexAdapter` (adapted)
+Adapter: `provider/FedexAdapter`
+Adaptee (third-party, untouched): `thirdparty/FedexSdkClient`, `FedexResponse`
+Complexity module - dynamic implementor selection: `provider/ProviderSelector'
 
 ## Documents
 
